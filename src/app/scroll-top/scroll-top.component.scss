@@ -1,0 +1,26 @@
+@import "~igniteui-angular/lib/core/styles/themes/index";
+
+$custom-button-theme: igx-button-theme(
+  $icon-background: #454d55,
+  $icon-color: white,
+  $icon-hover-color: white,
+  $icon-focus-background: #454d55,
+  $icon-focus-color: white,
+);
+
+:host ::ng-deep {
+  @include igx-button($custom-button-theme);
+}
+
+button {
+  position: fixed !important;
+  bottom: 40px !important;
+  right: 30px !important;
+  border-radius: 5px !important;
+  font-size: 20px;
+  z-index: 9999999;
+}
+
+button:hover {
+  box-shadow: 0 0 8px gray;
+}

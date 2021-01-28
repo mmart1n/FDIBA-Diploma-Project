@@ -1,0 +1,11 @@
+<ng-container *ngIf="connectionFailedMessage">
+  <app-carousel [connectionFailedMessage]="connectionFailedMessage"></app-carousel>
+</ng-container>
+<div *ngIf="isLoading" class="my-overlay">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<div *ngIf="!isLoading && !connectionFailedMessage" class="row">
+  <div class="col-lg-12 col-sm-12 top_marg">
+    <div [innerHTML]="html | noSanitize" class="home_div"></div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="select-wrapper" [ngStyle]="style">
+  <igx-select [igxFocus]="focus" #select class="specialty-select" [ngModel]="selectedSpecialty"
+    (onSelection)="handleSelection($event)">
+    <label igxLabel *ngIf="enableLabel">Select Specialty</label>
+    <igx-select-item-group *ngIf="bachelors.length" [label]="'Bachelors'">
+      <igx-select-item *ngFor="let bachelor of bachelors" [value]="bachelor">
+        {{ bachelor.name }}
+      </igx-select-item>
+    </igx-select-item-group>
+    <igx-select-item-group *ngIf="masters.length" [label]="'Masters'">
+      <igx-select-item *ngFor="let master of masters" [value]="master">
+        {{ master.name }}
+      </igx-select-item>
+    </igx-select-item-group>
+  </igx-select>
+</div>

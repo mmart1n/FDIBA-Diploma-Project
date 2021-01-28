@@ -1,0 +1,5 @@
+<igx-dialog #alert title="Your session is about to expire in two minutes!" rightButtonLabel="OK"
+  (onRightButtonSelect)="alert.close()">
+  <div class="igx-dialog__window-content"><span style="color: red;">If you have done any modifications don't forget to
+      commit them!</span> If you want to continue working please logout and login again!</div>
+</igx-dialog>

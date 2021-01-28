@@ -1,0 +1,82 @@
+<div *ngIf="isLoading" class="my-overlay">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<div class="row top_marg">
+  <div class="col-lg-3 col-sm-12"></div>
+  <div class="col-lg-6 col-sm-12">
+    <ng-container *ngIf="message">
+      <app-error-message [message]="message" (close)="handleError()"></app-error-message>
+    </ng-container>
+    <article class="input-group-form">
+      <form [formGroup]="signInForm" (ngSubmit)="onSignin()">
+        <h6>Sign In</h6>
+        <igx-input-group>
+          <input igxInput name="userEmail" type="email" formControlName="userEmail" />
+          <label igxLabel for="userEmail">Email</label>
+          <igx-suffix>
+            <igx-icon>email</igx-icon>
+          </igx-suffix>
+          <igx-hint *ngIf="!signInForm.get('userEmail').valid && signInForm.get('userEmail').touched">
+            Please enter correct email!
+          </igx-hint>
+        </igx-input-group>
+        <igx-input-group>
+          <input #userPass igxInput="userPassword" name="userPassword" type="password" formControlName="userPassword" />
+          <label igxLabel for="userPassword">Password</label>
+          <igx-suffix>
+            <igx-icon fontSet="material" class="visible-icon" (pointerdown)="showPass(userPass)"
+              (pointerup)="hidePass(userPass)">
+              visibility_on</igx-icon>
+          </igx-suffix>
+          <igx-hint *ngIf="!signInForm.get('userPassword').valid && signInForm.get('userPassword').touched">
+            Please enter a valid password! (more than 6 chars)</igx-hint>
+        </igx-input-group>
+        <div class="buttons-row">
+          <span></span>
+          <div class="buttons-wrapper">
+            <button class="button_submit" igxButton="outlined" igxRipple="white" type="button"
+              (click)="alert.open()">Reset
+              Password</button>
+            <button class="button_submit" igxButton="raised" igxRipple="white" type="submit"
+              [disabled]="!signInForm.valid">Sign In</button>
+          </div>
+        </div>
+      </form>
+    </article>
+  </div>
+</div>
+
+
+<igx-dialog #alert>
+  <igx-dialog-title>
+    <div class="dialog-container">
+      <igx-icon class="key">vpn_key</igx-icon>
+      <div class="dialog-title">Reset Password</div>
+      <button igxButton="icon" class="dialog-close" (click)="onCloseDialog(alert)">
+        <igx-icon>close</igx-icon>
+      </button>
+    </div>
+  </igx-dialog-title>
+
+  <form [formGroup]="resetPasswordForm" (ngSubmit)="onResetPassword(alert)" class="resetPasswordForm">
+    <p>Please provide your email address. <br>
+      We will send you an email that will allow you to reset your password.</p>
+    <igx-input-group>
+      <input igxInput name="userEmail" type="email" formControlName="userEmail" />
+      <label igxLabel for="userEmail">Email</label>
+      <igx-suffix>
+        <igx-icon>email</igx-icon>
+      </igx-suffix>
+      <igx-hint *ngIf="!resetPasswordForm.get('userEmail').valid && resetPasswordForm.get('userEmail').touched">
+        Please enter correct email!
+      </igx-hint>
+    </igx-input-group>
+    <div class="buttons-row">
+      <span></span>
+      <div class="buttons-wrapper">
+        <button class="button_submit" igxButton="raised" igxRipple="white" type="submit"
+          [disabled]="!resetPasswordForm.valid">Send verification email</button>
+      </div>
+    </div>
+  </form>
+</igx-dialog>

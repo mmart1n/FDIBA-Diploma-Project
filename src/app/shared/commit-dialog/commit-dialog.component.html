@@ -1,0 +1,21 @@
+<igx-dialog #dialog title="Submit the following transactions?" [isOpen]="opened">
+    <igx-grid #dialogGrid [data]="transactionsData" [rowHeight]="64" [primaryKey]="'id'" width="450px" height="300px"
+        [emptyGridMessage]="'No available transactions'">
+        <igx-column field="id" header="ID" [dataType]="'string'" width="100px"></igx-column>
+        <igx-column field="type" header="Type" width="150px" [sortable]="true">
+            <ng-template igxCell let-cell="cell" let-val>
+                <span [class]="classFromType(val)">{{ typeFormatter(val) }}</span>
+            </ng-template>
+        </igx-column>
+        <igx-column field="newValue" header="Value" [resizable]="true" width="1050px">
+            <ng-template igxCell let-cell="cell" let-val>
+                <span class="transaction-log">{{ stateFormatter(val) }}</span>
+            </ng-template>
+        </igx-column>
+    </igx-grid>
+    <div class="buttons-wrapper igx-dialog-buttons-wrapper">
+        <button igxButton (click)="commit()">Commit</button>
+        <button igxButton (click)="discard()">Discard</button>
+        <button igxButton (click)="close()">Cancel</button>
+    </div>
+</igx-dialog>

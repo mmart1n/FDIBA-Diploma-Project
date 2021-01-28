@@ -1,0 +1,25 @@
+<igx-grid #grid [data]="data" [primaryKey]="'id'" width="100%" height="auto"
+  [emptyGridMessage]="'There aren\'t any subjects for this course!'">
+  <igx-column header="ID" [width]="'70px'">
+    <ng-template igxCell let-cell="cell">
+      {{ cell.rowIndex }}
+    </ng-template>
+  </igx-column>
+  <igx-column field="subjectName" header="Subject" [dataType]="'string'" [resizable]="true"></igx-column>
+  <igx-column field="zip" header="ZIP" [width]="'80px'" [dataType]="'boolean'"></igx-column>
+  <igx-column field="remainingLectureHours" header="Lectures" [dataType]="'number'" [width]="'100px'"
+    [cellClasses]="remaingHoursClasses">
+  </igx-column>
+  <igx-column field="remainingLabExerciseHours" header="Lab. Exercises" dataType="number" [width]="'130px'"
+    [cellClasses]="remaingHoursClasses">
+  </igx-column>
+  <igx-column field="remainingSeminarHours" header="Seminars" [dataType]="'number'" [width]="'100px'"
+    [cellClasses]="remaingHoursClasses">
+  </igx-column>
+  <igx-column field="remainingCourseProjectHours" header="Course Projects" [dataType]="'number'" [width]="'130px'"
+    [cellClasses]="remaingHoursClasses">
+  </igx-column>
+  <igx-column field="remainingExaminationHours" header="Examination" [dataType]="'number'" [width]="'120px'"
+    [cellClasses]="remaingHoursClasses">
+  </igx-column>
+</igx-grid>

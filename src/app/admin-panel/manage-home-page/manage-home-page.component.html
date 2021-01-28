@@ -1,0 +1,31 @@
+<div *ngIf="isLoading" class="my-overlay">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<ng-container *ngIf="connectionFailedMessage">
+  <app-error-message [message]="connectionFailedMessage" (close)="handleError()"></app-error-message>
+</ng-container>
+<article class="input-group-form">
+  <h6>Manage Home Page</h6>
+  <span>Edit text for site: </span>
+  <igx-select [ngModel]="currentState" (onSelection)="onSelectionChange($event)"
+    style="display: inline-block; width: 110px; margin-bottom: 20px;">
+    <igx-select-item *ngFor="let state of siteStates" [value]="state">
+      {{ state ? 'working' : 'not working' }}
+    </igx-select-item>
+  </igx-select>
+  <span>state.</span>
+  <editor #tinymce apiKey="eorvfcrisbi4e8056rorrn82g2bd5ukgi986ve2cqn4xuo9g" [(ngModel)]="newHtml" [init]="{
+  height: 500,
+  plugins: 'print preview searchreplace directionality visualblocks visualchars image imagetools link media codesample table charmap hr pagebreak nonbreaking advlist lists wordcount textpattern emoticons',
+  toolbar: 'formatselect | fontsizeselect | fontselect | bold italic underline forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat emoticons',
+  image_advtab: true
+}"></editor>
+  <br>
+  <div class="buttons-row">
+    <span></span>
+    <div class="buttons-wrapper">
+      <button igxButton (click)="revertChanges()" [disabled]="!htmlUpdated">Cancel</button>
+      <button igxButton="raised" (click)="onPost()" [disabled]="!htmlUpdated">Submit</button>
+    </div>
+  </div>
+</article>

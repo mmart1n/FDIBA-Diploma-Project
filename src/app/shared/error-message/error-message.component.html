@@ -1,0 +1,8 @@
+<div class="alert" [ngClass]="message && message.indexOf('success') > 0 ? 'alert-success' : 'alert-danger'" role="alert">
+  <div class="message" [innerHTML]="message"></div>
+  <div class="close-icon">
+    <button igxButton="icon">
+      <igx-icon class="dialog-close" (click)="onCloseDialog()">close</igx-icon>
+    </button>
+  </div>
+</div>

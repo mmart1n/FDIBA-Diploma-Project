@@ -1,0 +1,94 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+
+@import "~igniteui-angular/lib/core/styles/themes/index";
+// Uncomment the following lines if you want to add a custom palette:
+// $primary: #731963 !default;
+// $secondary: #ce5712 !default;
+// $app-palette: igx-palette($primary, $secondary);
+
+/* autoprefixer grid: on */
+
+@include igx-core();
+@include igx-theme($default-palette);
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+}
+
+.top_marg {
+  margin-top: 20px !important;
+}
+
+.center {
+  margin: 0 auto;
+  width: 90%;
+}
+
+.igx-grid__tbody-message {
+  button {
+    display: none;
+  }
+}
+
+.input-group-form {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 2px 1px -1px rgba(0, 0, 0, 0.12);
+  padding: 24px;
+  margin-bottom: 48px;
+}
+
+.buttons-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.buttons-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.igx-dialog-buttons-wrapper {
+  padding: 10px 0;
+}
+
+.transaction--update,
+.transaction--delete,
+.transaction--add {
+  font-weight: 600;
+}
+
+.transaction--add {
+  color: #6b3;
+}
+
+.transaction--update {
+  color: #4a71b9;
+}
+
+.transaction--delete {
+  color: #ee4920;
+}
+
+.transaction-log {
+  word-wrap: none;
+}
+
+h6 {
+  margin-bottom: 20px !important;
+}
+
+@media screen and (max-width: 992px) {
+  .col-sm-12:not(:first-child) {
+    margin-top: 20px;
+  }
+}

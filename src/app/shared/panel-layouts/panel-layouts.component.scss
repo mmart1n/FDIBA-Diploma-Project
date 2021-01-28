@@ -1,0 +1,20 @@
+.header {
+  background-color: #09f;
+  color: #fff;
+}
+
+@media screen and (max-width: 992px) {
+  .header {
+    cursor: pointer;
+  }
+}
+
+.active {
+  background-color: #fff;
+  color: #09f;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.middle-arrow {
+  vertical-align: middle;
+}

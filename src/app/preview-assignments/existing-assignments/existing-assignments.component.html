@@ -1,0 +1,15 @@
+<igx-grid #grid [data]="data" [primaryKey]="'assignmentId'" width="100%" height="auto"
+  [emptyGridMessage]="'There aren\'t any assignments!'">
+  <igx-column field="subjectId" header="Subject" [dataType]="'string'" [resizable]="true"></igx-column>
+  <igx-column field="userId" header="Teacher" [dataType]="'string'"></igx-column>
+  <igx-column field="lectureHours" header="Lectures" [dataType]="'number'" [width]="'100px'">
+  </igx-column>
+  <igx-column field="labExerciseHours" header="Lab. Exercises" dataType="number" [width]="'130px'">
+  </igx-column>
+  <igx-column field="seminarHours" header="Seminars" [dataType]="'number'" [width]="'100px'">
+  </igx-column>
+  <igx-column field="courseProjectHours" header="Course Projects" [dataType]="'number'" [width]="'130px'">
+  </igx-column>
+  <igx-column field="examinationHours" header="Examination" [dataType]="'number'" [width]="'120px'">
+  </igx-column>
+</igx-grid>

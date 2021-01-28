@@ -1,0 +1,9 @@
+.input-group-form {
+  height: auto;
+}
+
+:host::ng-deep {
+  .igx-switch__label {
+    height: 33px;
+  }
+}

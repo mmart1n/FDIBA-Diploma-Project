@@ -1,0 +1,38 @@
+<ng-container *ngIf="connectionFailedMessage && !isLoading">
+  <app-carousel [connectionFailedMessage]="connectionFailedMessage"></app-carousel>
+</ng-container>
+<ng-container *ngIf="!selectedSpecialtySubjectsByCourses && !connectionFailedMessage && !isLoading">
+  <app-carousel
+    [connectionFailedMessage]="'Currently there aren\'t any subjects in the database. Please contact system administrators!'">
+  </app-carousel>
+</ng-container>
+<div *ngIf="isLoading" class="my-overlay">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<div *ngIf="!connectionFailedMessage"
+  [ngStyle]="{'display': isLoading || !selectedSpecialtySubjectsByCourses ? 'none' : 'flex'}" class="row top_marg">
+  <div class="col-lg-12 col-sm-12">
+    <div class="select-wrapper">
+      <app-select-specialty [selectedSpecialty]="selectedSpecialty" (onSpecialtySelection)="handleSelection($event)">
+      </app-select-specialty>
+    </div>
+  </div>
+  <div class="col-lg-12 col-sm-12">
+    <div *ngIf="selectedSpecialty === null">Choose Specialty</div>
+    <div *ngIf="selectedSpecialty !== null">
+      <ng-container *ngIf="!connectionFailedMessage && responseMessage">
+        <div class="top_marg">
+          <app-error-message [message]="responseMessage" (close)="handleError()"></app-error-message>
+        </div>
+      </ng-container>
+      <igx-tabs width="100%" class="top_marg" (onTabItemSelected)="itemSelected()">
+        <igx-tabs-group *ngFor="let item of [].constructor(coursesAmount); let i = index" [label]="'Course ' + (i+1)">
+          <app-selected-specialty-subjects [subjects]="selectedSpecialtySubjectsByCourses[i]">
+          </app-selected-specialty-subjects>
+          <app-select-assignments [assignments]="selectedSpecialtyAssignmentsByCourses[i]"
+            [subjects]="selectedSpecialtySubjectsByCourses[i]" [userId]="currentUser.userId"></app-select-assignments>
+        </igx-tabs-group>
+      </igx-tabs>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<ng-container *ngIf="connectionFailedMessage">
+  <app-error-message [message]="connectionFailedMessage" (close)="handleError()"></app-error-message>
+</ng-container>
+<ng-container *ngIf="!connectionFailedMessage && failedSemesters.length > 0">
+  <app-error-message [message]="responseMessage" (close)="handleError()"></app-error-message>
+</ng-container>
+<article class="input-group-form">
+  <h6>Manage Site State</h6>
+  <igx-select [ngModel]="activeSemesterId" (onSelection)='handleSelection($event)'>
+    <label igxLabel>Current Active Semester</label>
+    <igx-select-item *ngFor="let semester of data" [value]="semester.id">{{semester.name}}
+    </igx-select-item>
+  </igx-select>
+  <igx-switch (click)="stateChangeDialog.open()" [checked]="siteState" class="top_marg">
+    Site {{ siteState ? 'Working' : 'Not Working' }}
+  </igx-switch>
+  <h6 style="margin-top: 13px">Manage Semesters</h6>
+  <span style="color: red;">Deleting a semester will cascade delete all subjects related to it and their
+    assignments!</span>
+  <app-grid-with-transactions>
+    <igx-grid #gridRowEditTransaction [data]="data" [primaryKey]="'id'" width="100%" height="280px" [rowEditable]="true"
+      [allowFiltering]="true" (onSortingDone)="removeSorting($event)" (rowEdit)="onRowEditDone($event)"
+      (cellEditEnter)="onCellEditEnter($event)">
+      <igx-column [filterable]="false" [editable]="false" [pinned]="true" [width]="'80px'">
+        <ng-template igxCell let-cell="cell" let-val>
+          <button title="Delete" igxButton="icon" igxRipple *ngIf="!cell.row.deleted" [disabled]="cell.rowData.active"
+            (click)="deleteRow(cell.cellID.rowID)">
+            <igx-icon>delete</igx-icon>
+          </button>
+          <button title="Revert All Row Changes" igxButton="icon" igxRipple *ngIf="cell.row.deleted"
+            (click)="revertDeletedRow(cell.cellID.rowID)">
+            <igx-icon>undo</igx-icon>
+          </button>
+        </ng-template>
+      </igx-column>
+      <igx-column field="name" header="Name" [dataType]="'string'" [sortable]="true" [width]="'250px'">
+      </igx-column>
+      <igx-column field="semesterPeriod" header="Period" [dataType]="'string'" [sortable]="true">
+      </igx-column>
+      <igx-column field="active" header="Active" [dataType]="'boolean'" [sortable]="true" [editable]="false">
+      </igx-column>
+    </igx-grid>
+  </app-grid-with-transactions>
+  <div class="buttons-row">
+    <button igxButton [disabled]="grid.rowInEditMode" (click)="addRow()">Add Row</button>
+    <div class="buttons-wrapper">
+      <button igxButton [disabled]="!undoEnabled || grid.rowInEditMode" (click)="onUndo()">Undo</button>
+      <button igxButton [disabled]="!redoEnabled || grid.rowInEditMode" (click)="onRedo()">Redo</button>
+      <button igxButton [disabled]="!hasTransactions || grid.rowInEditMode" (click)="onCommit()">Commit</button>
+    </div>
+  </div>
+</article>
+
+<igx-toast #toast displayTime="800"></igx-toast>
+
+<app-commit-dialog [transactionsData]="transactionsData" [(opened)]="isCommitDialogOpened"
+  (commitData)="handleTransactionsData($event)"></app-commit-dialog>
+
+<igx-dialog #stateChangeDialog title="Confirmation" leftButtonLabel="Cancel"
+  (onLeftButtonSelect)="onStateConfirmationCanceled()" rightButtonLabel="OK"
+  (onRightButtonSelect)="onStateConfirmationAccepted()">
+  <div class="igx-dialog__window-content">Are you sure you want to change the site state to
+    {{ this.siteState ? 'disabled' : 'enabled' }}?</div>
+</igx-dialog>
+
+<igx-dialog #activeSemesterChangeDialog title="Confirmation" leftButtonLabel="Cancel"
+  (onLeftButtonSelect)="onSemesterConfirmationCanceled()" rightButtonLabel="OK"
+  (onRightButtonSelect)="onSemesterConfirmationAccepted()">
+  <div class="igx-dialog__window-content"><span style="color: red;">Processing further will delete all current
+      assignments!</span> Are you sure you want to change the current active semester to
+    {{ newActiveSemester ? newActiveSemester.name: null }}?</div>
+</igx-dialog>

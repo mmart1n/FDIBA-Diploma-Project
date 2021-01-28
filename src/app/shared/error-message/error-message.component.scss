@@ -1,0 +1,26 @@
+.alert {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 20px;
+  display: table;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
+  border-radius: 0;
+}
+
+.message {
+  width: 90%;
+  text-align: left;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.close-icon {
+  width: 10%;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: right;
+}
+
+.igx-icon {
+  vertical-align: middle;
+}

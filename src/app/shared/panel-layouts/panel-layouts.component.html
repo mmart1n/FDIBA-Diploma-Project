@@ -1,0 +1,18 @@
+<div class="row top_marg">
+  <div class="col-lg-3 col-sm-12">
+    <div class="list-group">
+      <li class="list-group-item list-group-item-action header" (click)="handleMenuCollapse()">
+        Menu
+        <span *ngIf="isMobile" style="float: right">
+          <igx-icon class="middle-arrow">arrow_drop{{ isCollapsed ? '_down' : '_up' }}</igx-icon>
+        </span>
+      </li>
+      <div [ngbCollapse]="isCollapsed">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9 col-sm-12">
+    <router-outlet></router-outlet>
+  </div>
+</div>

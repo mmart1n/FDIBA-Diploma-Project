@@ -1,0 +1,56 @@
+<ng-container *ngIf="connectionFailedMessage">
+  <app-error-message [message]="connectionFailedMessage" (close)="handleError()"></app-error-message>
+</ng-container>
+<ng-container *ngIf="!connectionFailedMessage && failedAssignments.length > 0">
+  <app-error-message [message]="responseMessage" (close)="handleError()"></app-error-message>
+</ng-container>
+<article class="input-group-form">
+  <h6>My Assignments</h6>
+  <app-grid-with-transactions>
+    <igx-grid #gridRowEditTransaction [data]="assignments" [primaryKey]="'id'" width="100%" height="440px"
+      [rowEditable]="true" [emptyGridMessage]="'You don\'t have any assignments yet!'">
+      <igx-column [filterable]="false" [editable]="false" [pinned]="true" [width]="'80px'">
+        <ng-template igxCell let-cell="cell" let-val>
+          <button title="Delete" igxButton="icon" igxRipple *ngIf="!cell.row.deleted"
+            (click)="deleteRow(cell.cellID.rowID)">
+            <igx-icon>delete</igx-icon>
+          </button>
+          <button title="Undo All" igxButton="icon" igxRipple *ngIf="cell.row.deleted"
+            (click)="revertDeletedRow(cell.cellID.rowID)">
+            <igx-icon>undo</igx-icon>
+          </button>
+        </ng-template>
+      </igx-column>
+      <igx-column field="subjectName" header="Subject" width="200px" [dataType]="'string'" [resizable]="true"
+        [pinned]="true" [editable]="false">
+      </igx-column>
+      <igx-column field="specialty" header="Specialty" width="200px" [dataType]="'string'" [resizable]="true"
+        [editable]="false">
+      </igx-column>
+      <igx-column field="bachelor" header="Bachelor" [dataType]="'boolean'" [resizable]="true" [editable]="false">
+      </igx-column>
+      <igx-column field="course" header="Course" [dataType]="'string'" [resizable]="true" [editable]="false">
+      </igx-column>
+      <igx-column field="lectureHours" header="Lectures" [dataType]="'number'" [width]="'100px'"></igx-column>
+      <igx-column field="labExerciseHourse" header="Lab. Exercises" [dataType]="'number'" [width]="'130px'">
+      </igx-column>
+      <igx-column field="seminarHours" header="Seminars" [dataType]="'number'" [width]="'100px'"></igx-column>
+      <igx-column field="courseProjectHours" header="Course Projects" [dataType]="'number'" [width]="'130px'">
+      </igx-column>
+      <igx-column field="examinationHours" header="Examination" [dataType]="'number'" [width]="'120px'"></igx-column>
+    </igx-grid>
+  </app-grid-with-transactions>
+  <div class="buttons-row">
+    <span></span>
+    <div class="buttons-wrapper">
+      <button igxButton [disabled]="!undoEnabled || grid.rowInEditMode" (click)="onUndo()">Undo</button>
+      <button igxButton [disabled]="!redoEnabled || grid.rowInEditMode" (click)="onRedo()">Redo</button>
+      <button igxButton [disabled]="!hasTransactions || grid.rowInEditMode" (click)="onCommit()">Commit</button>
+    </div>
+  </div>
+</article>
+
+<igx-toast #toast displayTime="800"></igx-toast>
+
+<app-commit-dialog [transactionsData]="transactionsData" [(opened)]="isCommitDialogOpened"
+  (commitData)="handleTransactionsData($event)"></app-commit-dialog>

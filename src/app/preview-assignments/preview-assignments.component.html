@@ -1,0 +1,31 @@
+<ng-container *ngIf="connectionFailedMessage && !isLoading">
+  <app-carousel [connectionFailedMessage]="connectionFailedMessage"></app-carousel>
+</ng-container>
+<ng-container *ngIf="!selectedSpecialtySubjectsByCourses && !connectionFailedMessage && !isLoading">
+  <app-carousel
+    [connectionFailedMessage]="'Currently there aren\'t any subjects in the database. Please contact system administrators!'">
+  </app-carousel>
+</ng-container>
+<div *ngIf="isLoading" class="my-overlay">
+  <app-loading-spinner></app-loading-spinner>
+</div>
+<div *ngIf="!connectionFailedMessage"
+  [ngStyle]="{'display': isLoading || !selectedSpecialtySubjectsByCourses ? 'none' : 'flex'}" class="row top_marg">
+  <div class="col-lg-12 col-sm-12">
+    <div class="select-wrapper">
+      <app-select-specialty [selectedSpecialty]="selectedSpecialty" (onSpecialtySelection)="handleSelection($event)">
+      </app-select-specialty>
+    </div>
+  </div>
+  <div class="col-lg-12 col-sm-12">
+    <div *ngIf="selectedSpecialty === null">Choose Specialty</div>
+    <div *ngIf="selectedSpecialty !== null">
+      <div *ngFor="let item of [].constructor(coursesAmount); let i = index">
+        <h5>{{ selectedSpecialty.name + ': ' + 'Course ' + (i+1)}}</h5>
+        <app-selected-specialty-subjects [subjects]="selectedSpecialtySubjectsByCourses[i]">
+        </app-selected-specialty-subjects>
+        <app-existing-assignments [assignments]="selectedSpecialtyAssignmentsByCourses[i]"></app-existing-assignments>
+      </div>
+    </div>
+  </div>
+</div>

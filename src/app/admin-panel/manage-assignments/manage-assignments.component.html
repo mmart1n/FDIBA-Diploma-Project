@@ -1,0 +1,172 @@
+<ng-container *ngIf="connectionFailedMessage">
+  <app-error-message [message]="connectionFailedMessage" (close)="handleError()"></app-error-message>
+</ng-container>
+<ng-container *ngIf="!connectionFailedMessage && failedAssignments.length > 0">
+  <app-error-message [message]="responseMessage" (close)="handleError()"></app-error-message>
+</ng-container>
+<article class="input-group-form">
+  <h6 style="margin-bottom: 0;">Subjects with not allocated hours</h6>
+  <igx-grid #subjectsGrid [data]="subjectsWithNotAllocatedHours" [primaryKey]="'id'" width="100%" height="340px"
+    [allowFiltering]="true" [filterStrategy]="filteringStrategy">
+    <igx-column #colName field="subjectName" header="Name" [dataType]="'string'" [sortable]="true" [width]="'250px'">
+      <ng-template igxHeader>
+        <div class="title-inner">
+          <span style="float:left">{{colName.header}}</span>
+          <igx-icon class="pin-icon" fontSet="fas" name="fa-thumbtack" (click)="toggleColumn(colName)"></igx-icon>
+        </div>
+      </ng-template>
+    </igx-column>
+    <igx-column #colSpecialty field="specialtyId" header="Specialty" [dataType]="'string'" [width]="'200px'"
+      [sortable]="true" [sortStrategy]="specialtiesSortingStrategy">
+      <ng-template igxHeader>
+        <div class="title-inner">
+          <span style="float:left">{{colSpecialty.header}}</span>
+          <igx-icon class="pin-icon" fontSet="fas" name="fa-thumbtack" (click)="toggleColumn(colSpecialty)"></igx-icon>
+        </div>
+      </ng-template>
+      <ng-template igxCell let-specialty let-cell="cell">
+        <div class="igx-grid__td-text">
+          {{ getSpecialtyById(specialty) }}
+        </div>
+      </ng-template>
+    </igx-column>
+    <igx-column field="zip" header="Obligatory" [dataType]="'boolean'" [sortable]="true">
+    </igx-column>
+    <igx-column field="course" header="Course" [dataType]="'number'" [sortable]="true">
+    </igx-column>
+    <igx-column field="remainingLectureHours" header="Lectures" [dataType]="'number'" [sortable]="true">
+    </igx-column>
+    <igx-column field="remainingLabExerciseHours" header="Lab Exercises" [dataType]="'number'" [sortable]="true">
+    </igx-column>
+    <igx-column field="remainingSeminarHours" header="Seminars" [dataType]="'number'" [sortable]="true">
+    </igx-column>
+    <igx-column field="remainingCourseProjectHours" header="Course Projects" [dataType]="'number'" [sortable]="true">
+    </igx-column>
+    <igx-column field="remainingExaminationHours" header="Examination" [dataType]="'number'" [sortable]="true">
+    </igx-column>
+  </igx-grid>
+  <h6 style="margin-top: 20px; margin-bottom: 0;">Manage Assignments</h6>
+  <app-grid-with-transactions>
+    <igx-grid #gridRowEditTransaction [data]="data" [primaryKey]="'assignmentId'" width="100%" height="440px"
+      [rowEditable]="true" [allowFiltering]="true" [filterStrategy]="filteringStrategy" [cellSelection]="'none'"
+      (rowEdit)="onRowEditDone($event)" (cellEditEnter)="onCellEditEnter($event)">
+      <igx-column [filterable]="false" [editable]="false" [pinned]="true" [width]="'80px'">
+        <ng-template igxCell let-cell="cell" let-val>
+          <button title="Delete" igxButton="icon" igxRipple *ngIf="!cell.row.deleted"
+            (click)="deleteRow(cell.cellID.rowID)">
+            <igx-icon>delete</igx-icon>
+          </button>
+          <button title="Undo All" igxButton="icon" igxRipple *ngIf="cell.row.deleted"
+            (click)="revertDeletedRow(cell.cellID.rowID)">
+            <igx-icon>undo</igx-icon>
+          </button>
+        </ng-template>
+      </igx-column>
+      <igx-column #col field="specialtyId" header="Specialty" [dataType]="'string'" [sortable]="true" [width]="'250px'"
+        [sortStrategy]="specialtiesSortingStrategy">
+        <ng-template igxHeader>
+          <div class="title-inner">
+            <span style="float:left">{{col.header}}</span>
+            <igx-icon class="pin-icon" fontSet="fas" name="fa-thumbtack" (click)="toggleColumn(col)"></igx-icon>
+          </div>
+        </ng-template>
+        <ng-template igxCell let-specialtyId let-cell="cell">
+          <div class="igx-grid__td-text">
+            {{ getSpecialtyById(specialtyId) }}
+          </div>
+        </ng-template>
+        <ng-template igxCellEditor let-cell="cell">
+          <div class="center">
+            <app-select-specialty [selectedSpecialty]="{id: cell.editValue}" [enableLabel]="false" [float]="'left'"
+              (onSpecialtySelection)="updateCell($event[1].id, cell)" [width]="225">
+            </app-select-specialty>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column #col2 field="userId" header="Teacher" [dataType]="'string'" [sortable]="true" [width]="'250px'"
+        [sortStrategy]="usersSortingStrategy">
+        <ng-template igxHeader>
+          <div class="title-inner">
+            <span style="float:left">{{col2.header}}</span>
+            <igx-icon class="pin-icon" fontSet="fas" name="fa-thumbtack" (click)="toggleColumn(col2)"></igx-icon>
+          </div>
+        </ng-template>
+        <ng-template igxCell let-user let-cell="cell">
+          <div class="igx-grid__td-text">
+            {{ getUserById(allUsers, user) }}
+          </div>
+        </ng-template>
+        <ng-template igxCellEditor let-cell="cell">
+          <div class="center">
+            <igx-select [ngModel]="cell.editValue" (ngModelChange)="updateCell($event, cell)"
+              [overlaySettings]="customOverlaySettings" [disabled]="shouldDisable(cell)">
+              <igx-select-item *ngFor="let user of allUsers" [value]="user.id">
+                {{ user.firstName }} {{ user.lastName }}
+              </igx-select-item>
+            </igx-select>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column field="course" header="Course" [dataType]="'number'" [sortable]="true" [width]="'120px'">
+        <ng-template igxCellEditor let-cell="cell">
+          <div class="center">
+            <igx-select [ngModel]="cell.editValue" (ngModelChange)="updateCell($event, cell)"
+              [overlaySettings]="customOverlaySettings" [disabled]="shouldDisable(cell)">
+              <igx-select-item *ngFor="let course of getArrayFromSpecialtyCourses(cell.rowData.specialtyId)"
+                [value]="course">
+                {{course}}
+              </igx-select-item>
+            </igx-select>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column #col3 field="subjectId" header="Subject" [dataType]="'string'" [sortable]="true" [width]="'250px'"
+        [sortStrategy]="subjectsSortingStrategy">
+        <ng-template igxHeader>
+          <div class="title-inner">
+            <span style="float:left">{{col3.header}}</span>
+            <igx-icon class="pin-icon" fontSet="fas" name="fa-thumbtack" (click)="toggleColumn(col3)"></igx-icon>
+          </div>
+        </ng-template>
+        <ng-template igxCell let-subject let-cell="cell">
+          <div class="igx-grid__td-text">
+            {{ getSubjectById(subject) }}
+          </div>
+        </ng-template>
+        <ng-template igxCellEditor let-cell="cell">
+          <div class="center">
+            <igx-select #select [(ngModel)]="cell.editValue" [overlaySettings]="customOverlaySettings"
+              [disabled]="shouldDisable(cell)">
+              <igx-select-item *ngFor="let subject of selectedSpecialtySubjects" [value]="subject.id">
+                {{subject.subjectName}}
+              </igx-select-item>
+            </igx-select>
+          </div>
+        </ng-template>
+      </igx-column>
+      <igx-column field="lectureHours" header="Lectures" [dataType]="'number'" [sortable]="true">
+      </igx-column>
+      <igx-column field="labExerciseHours" header="Lab Exercises" [dataType]="'number'" [sortable]="true">
+      </igx-column>
+      <igx-column field="seminarHours" header="Seminars" [dataType]="'number'" [sortable]="true">
+      </igx-column>
+      <igx-column field="courseProjectHours" header="Course Projects" [dataType]="'number'" [sortable]="true">
+      </igx-column>
+      <igx-column field="examinationHours" header="Examination" [dataType]="'number'" [sortable]="true">
+      </igx-column>
+    </igx-grid>
+  </app-grid-with-transactions>
+  <div class="buttons-row">
+    <button igxButton [disabled]="grid.rowInEditMode" (click)="addRow()">Add Row</button>
+    <div class="buttons-wrapper">
+      <button igxButton [disabled]="!undoEnabled || grid.rowInEditMode" (click)="onUndo()">Undo</button>
+      <button igxButton [disabled]="!redoEnabled || grid.rowInEditMode" (click)="onRedo()">Redo</button>
+      <button igxButton [disabled]="!hasTransactions || grid.rowInEditMode" (click)="onCommit()">Commit</button>
+    </div>
+  </div>
+</article>
+
+<igx-toast #toast displayTime="800"></igx-toast>
+
+<app-commit-dialog [transactionsData]="transactionsData" [(opened)]="isCommitDialogOpened"
+  (commitData)="handleTransactionsData($event)"></app-commit-dialog>

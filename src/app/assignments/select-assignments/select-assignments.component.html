@@ -1,0 +1,58 @@
+<app-grid-with-transactions>
+  <igx-grid #grid [data]="data" [primaryKey]="'assignmentId'" width="100%" height="auto" [rowEditable]="true"
+    (rowEdit)="onRowEditDone($event)" (cellEditEnter)="onCellEditEnter($event)"
+    [emptyGridMessage]="'Currently you don\'t have any assignments related to those subjects!'">
+    <igx-column header="My Assignments" [filterable]="false" [editable]="false" [pinned]="true" [width]="'135px'"
+      [cellStyles]="{'justify-content': 'center'}">
+      <ng-template igxCell let-cell="cell" let-val>
+        <button title="Delete" igxButton="icon" igxRipple *ngIf="!cell.row.deleted"
+          (click)="deleteRow(cell.cellID.rowID)">
+          <igx-icon>delete</igx-icon>
+        </button>
+        <button title="Undo All" igxButton="icon" igxRipple *ngIf="cell.row.deleted"
+          (click)="revertDeletedRow(cell.cellID.rowID)">
+          <igx-icon>undo</igx-icon>
+        </button>
+      </ng-template>
+    </igx-column>
+    <igx-column field="subjectId" header="Subject" [dataType]="'string'" [sortStrategy]="subjectsSortingStrategy">
+      <ng-template igxCell let-subject let-cell="cell">
+        <div class="igx-grid__td-text">
+          {{ getSubjectById(subject) }}
+        </div>
+      </ng-template>
+      <ng-template igxCellEditor let-cell="cell">
+        <div class="center">
+          <igx-select #select [(ngModel)]="cell.editValue" [overlaySettings]="customOverlaySettings">
+            <igx-select-item *ngFor="let subject of subjects" [value]="subject.id">
+              {{subject.subjectName}}
+            </igx-select-item>
+          </igx-select>
+        </div>
+      </ng-template>
+    </igx-column>
+    <igx-column field="lectureHours" header="Lectures" [dataType]="'number'" [width]="'100px'">
+    </igx-column>
+    <igx-column field="labExerciseHours" header="Lab. Exercises" dataType="number" [width]="'130px'">
+    </igx-column>
+    <igx-column field="seminarHours" header="Seminars" [dataType]="'number'" [width]="'100px'">
+    </igx-column>
+    <igx-column field="courseProjectHours" header="Course Projects" [dataType]="'number'" [width]="'130px'">
+    </igx-column>
+    <igx-column field="examinationHours" header="Examination" [dataType]="'number'" [width]="'120px'">
+    </igx-column>
+  </igx-grid>
+</app-grid-with-transactions>
+<div class="buttons-row">
+  <button igxButton [disabled]="grid.rowInEditMode" (click)="addRow()">Add Assignment</button>
+  <div class="buttons-wrapper">
+    <button igxButton [disabled]="!undoEnabled || grid.rowInEditMode" (click)="onUndo()">Undo</button>
+    <button igxButton [disabled]="!redoEnabled || grid.rowInEditMode" (click)="onRedo()">Redo</button>
+    <button igxButton [disabled]="!hasTransactions || grid.rowInEditMode" (click)="onCommit()">Commit</button>
+  </div>
+</div>
+
+<igx-toast #toast displayTime="800"></igx-toast>
+
+<app-commit-dialog [transactionsData]="transactionsData" [(opened)]="isCommitDialogOpened"
+  (commitData)="handleTransactionsData($event)"></app-commit-dialog>
